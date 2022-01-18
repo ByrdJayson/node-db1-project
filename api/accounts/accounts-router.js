@@ -26,8 +26,10 @@ router.post('/', md.checkAccountPayload, md.checkAccountNameUnique, async (req, 
 
 router.put('/:id', 
 md.checkAccountId,
-md.checkAccountNameUnique,
-md.checkAccountPayload, (req, res, next) => {
+md.checkAccountPayload,
+async (req, res, next) => {
+  const updated = await Account.updateById(req.params.id, req.body)
+  res.json(updated)
   try {
     res.json('edit account')
   } catch(err) {
@@ -35,9 +37,10 @@ md.checkAccountPayload, (req, res, next) => {
   }
 });
 
-router.delete('/:id', md.checkAccountId, (req, res, next) => {
+router.delete('/:id', md.checkAccountId, async (req, res, next) => {
   try {
-    res.json('delete account')
+    await Account.deleteById(req.params.id)
+    res.json(req.account)
   } catch(err) {
     next(err)
   }
